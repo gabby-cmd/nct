@@ -24,22 +24,8 @@ if uploaded_file and nct_data is not None:
         st.error("Missing required columns in CSV: patientid, patientname, primarydiag, secondarydiag, gender, icdcode")
     else:
         search_patient = st.text_input("Search Patient by Name:")
-        
-        # Matching logic
-        def match_nct(icd_code):
-            # Convert icd_code to uppercase and check if it's in the eligibility criteria (case insensitive)
-            icd_code = icd_code.upper()
-            matched_trials = nct_data[nct_data["Eligibility Criteria"].str.contains(icd_code, case=False, na=False)]
-            
-            if not matched_trials.empty:
-                return matched_trials
-            else:
-                return None
-        
-        # Create a column for matched NCT IDs and descriptions
-        df["Matched NCT"] = df["icdcode"].apply(lambda icd: match_nct(icd))
-        
-        # Display results
+
+        # Directly print the NCT trials when the names match
         if search_patient:
             patient_data = df[df["patientname"].str.lower() == search_patient.lower()]
             if not patient_data.empty:
@@ -48,14 +34,10 @@ if uploaded_file and nct_data is not None:
                     st.write(f"Primary Diagnosis: {row['primarydiag']}")
                     st.write(f"Secondary Diagnosis: {row['secondarydiag']}")
                     
-                    matched_nct = row['Matched NCT']
-                    
-                    if matched_nct is not None:
-                        st.write("### Matched Clinical Trials:")
-                        for _, nct_row in matched_nct.iterrows():
-                            st.write(f"- **NCT ID**: {nct_row['NCT ID']}, **Study Name**: {nct_row['Study Name']}")
-                            st.write(f"  **Eligibility Criteria**: {nct_row['Eligibility Criteria']}")
-                    else:
-                        st.write("No matching trials found.")
+                    st.write("### Matched Clinical Trials:")
+                    # Display all NCT trials
+                    for _, nct_row in nct_data.iterrows():
+                        st.write(f"- **NCT ID**: {nct_row['NCT ID']}, **Study Name**: {nct_row['Study Name']}")
+                        st.write(f"  **Eligibility Criteria**: {nct_row['Eligibility Criteria']}")
             else:
                 st.write("Patient not found.")
