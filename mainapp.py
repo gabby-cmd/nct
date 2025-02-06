@@ -33,11 +33,11 @@ if uploaded_file and nct_data is not None:
                     st.write(f"### Patient: {row['patientname']} ({row['gender']})")
                     st.write(f"Primary Diagnosis: {row['primarydiag']}")
                     st.write(f"Secondary Diagnosis: {row['secondarydiag']}")
-                    
+
                     # Filter NCT trials based on diagnosis
                     if "Multiple Myeloma" in row["primarydiag"]:
                         st.write("### Matched Clinical Trials for Multiple Myeloma:")
-                        mm_trials = nct_data[nct_data["Study Name"].str.contains("MM", case=False, na=False)]
+                        mm_trials = nct_data[nct_data["Eligibility Criteria"].str.contains("MM", case=False, na=False)]
                         if not mm_trials.empty:
                             for _, nct_row in mm_trials.iterrows():
                                 st.write(f"- **NCT ID**: {nct_row['NCT ID']}, **Study Name**: {nct_row['Study Name']}")
@@ -47,7 +47,7 @@ if uploaded_file and nct_data is not None:
                     
                     if "Ovarian Cancer" in row["primarydiag"] or "Ovary" in row["primarydiag"]:
                         st.write("### Matched Clinical Trials for Ovarian Cancer:")
-                        ovarian_trials = nct_data[nct_data["Study Name"].str.contains("Ovarian", case=False, na=False)]
+                        ovarian_trials = nct_data[nct_data["Eligibility Criteria"].str.contains("Ovarian", case=False, na=False)]
                         if not ovarian_trials.empty:
                             for _, nct_row in ovarian_trials.iterrows():
                                 st.write(f"- **NCT ID**: {nct_row['NCT ID']}, **Study Name**: {nct_row['Study Name']}")
