@@ -25,7 +25,7 @@ if uploaded_file and nct_data is not None:
     else:
         search_patient = st.text_input("Search Patient by Name:")
 
-        # Directly print the NCT trials when the names match
+        # Directly print the relevant NCT trials when the names match
         if search_patient:
             patient_data = df[df["patientname"].str.lower() == search_patient.lower()]
             if not patient_data.empty:
@@ -34,10 +34,25 @@ if uploaded_file and nct_data is not None:
                     st.write(f"Primary Diagnosis: {row['primarydiag']}")
                     st.write(f"Secondary Diagnosis: {row['secondarydiag']}")
                     
-                    st.write("### Matched Clinical Trials:")
-                    # Display all NCT trials
-                    for _, nct_row in nct_data.iterrows():
-                        st.write(f"- **NCT ID**: {nct_row['NCT ID']}, **Study Name**: {nct_row['Study Name']}")
-                        st.write(f"  **Eligibility Criteria**: {nct_row['Eligibility Criteria']}")
+                    # Filter NCT trials based on diagnosis
+                    if "Multiple Myeloma" in row["primarydiag"]:
+                        st.write("### Matched Clinical Trials for Multiple Myeloma:")
+                        mm_trials = nct_data[nct_data["Study Name"].str.contains("MM", case=False, na=False)]
+                        if not mm_trials.empty:
+                            for _, nct_row in mm_trials.iterrows():
+                                st.write(f"- **NCT ID**: {nct_row['NCT ID']}, **Study Name**: {nct_row['Study Name']}")
+                                st.write(f"  **Eligibility Criteria**: {nct_row['Eligibility Criteria']}")
+                        else:
+                            st.write("No MM-related trials found.")
+                    
+                    if "Ovarian Cancer" in row["primarydiag"] or "Ovary" in row["primarydiag"]:
+                        st.write("### Matched Clinical Trials for Ovarian Cancer:")
+                        ovarian_trials = nct_data[nct_data["Study Name"].str.contains("Ovarian", case=False, na=False)]
+                        if not ovarian_trials.empty:
+                            for _, nct_row in ovarian_trials.iterrows():
+                                st.write(f"- **NCT ID**: {nct_row['NCT ID']}, **Study Name**: {nct_row['Study Name']}")
+                                st.write(f"  **Eligibility Criteria**: {nct_row['Eligibility Criteria']}")
+                        else:
+                            st.write("No Ovarian Cancer-related trials found.")
             else:
                 st.write("Patient not found.")
