@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 
 # Streamlit App
-st.title("Clinical Trial Matching for Multiple Myeloma and Ovarian Cancer")
+st.title("Clinical Trial Matching ")
 
 # Upload NCT Details CSV
 nct_file = st.file_uploader("Upload NCT Details (CSV)", type=["csv"])
