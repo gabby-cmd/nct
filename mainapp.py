@@ -27,8 +27,14 @@ if uploaded_file and nct_data is not None:
         
         # Matching logic
         def match_nct(icd_code):
+            # Convert icd_code to uppercase and check if it's in the eligibility criteria (case insensitive)
+            icd_code = icd_code.upper()
             matched_trials = nct_data[nct_data["Eligibility Criteria"].str.contains(icd_code, case=False, na=False)]
-            return matched_trials if not matched_trials.empty else None
+            
+            if not matched_trials.empty:
+                return matched_trials
+            else:
+                return None
         
         # Create a column for matched NCT IDs and descriptions
         df["Matched NCT"] = df["icdcode"].apply(lambda icd: match_nct(icd))
