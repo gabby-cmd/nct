@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 
 # Streamlit App
-st.title("Clinical Trial Matching for Multiple Myeloma and Ovarian Cancer")
+st.title("Clinical Trial Matching")
 
 # Upload NCT Details CSV
 nct_file = st.file_uploader("Upload NCT Details (CSV)", type=["csv"])
@@ -19,7 +19,15 @@ uploaded_file = st.file_uploader("Upload Patient Data (CSV)", type=["csv"])
 
 if uploaded_file and nct_data is not None:
     df = pd.read_csv(uploaded_file)
+    
+    # Clean column names by stripping extra spaces and converting to lowercase
+    df.columns = df.columns.str.strip().str.lower()
+    
+    # Checking the column names to debug
+    st.write(df.columns)  # Debugging line to check column names
+    
     required_patient_columns = {"patientid", "patientname", "primarydiag", "secondarydiag", "gender", "icdcode"}
+    
     if not required_patient_columns.issubset(df.columns):
         st.error("Missing required columns in CSV: patientid, patientname, primarydiag, secondarydiag, gender, icdcode")
     else:
